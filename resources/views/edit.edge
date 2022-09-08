@@ -1,0 +1,40 @@
+@layout('layouts.master')
+
+@section('content')
+
+  <main class="container" role="main">
+
+    @if(flashMessage('successMessage'))
+      <div class="alert alert-success">{{flashMessage('successMessage')}} </div>
+    @endif
+
+    @if(hasErrorFor('newTask'))
+      <div class="alert alert-danger">{{getErrorFor('newTask')}} </div>
+    @endif
+
+    <div class="row my-3">
+      <div class="col-md-12">
+        <div class="card card-secondary">
+          <div class="card-header">
+            <h3 class="card-title">Edit Task</h3>
+          </div>
+          <form action="{{ route('todos.update', {id: todo.id}) + '?_method=PATCH' }} " method="POST">
+            {{ csrfField() }}
+
+            <div class="card-body">
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="editTask" id="editTask" class="form-control" value="{{old('editTask', todo.title)}}">
+              </div>
+              
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">Update</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+@endsection

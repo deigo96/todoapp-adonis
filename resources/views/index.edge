@@ -1,0 +1,79 @@
+@layout('layouts.master')
+
+@section('content')
+  <main class="container" role="main">
+
+    @if(flashMessage('successMessage'))
+      <div class="alert alert-success">{{flashMessage('successMessage')}} </div>
+    @endif
+
+    @if(hasErrorFor('newTask'))
+      <div class="alert alert-danger">{{getErrorFor('newTask')}} </div>
+    @endif
+
+    <div class="row my-3">
+      <div class="col-md-12">
+        <div class="card card-secondary">
+          <div class="card-header">
+            <h3 class="card-title">New Task</h3>
+          </div>
+          <form action="{{ route('todos.tambah') }}" method="POST">
+            {{ csrfField() }}
+            <div class="card-body">
+              <div class="form-group">
+                <label for="title">{{title}}</label>
+                <input type="text" name="newTask" id="newTask" class="form-control" value="{{old('newTask')}}">
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="col-md-12">
+        <div class="card card-secondary">
+          <div class="card-header">
+            <h3 class="card-title">Task</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list-group">
+              @if(todos.length == 0)
+                <h3 class="text-center">Tidak ada task</h3>
+              @else
+                @each(todo in todos)
+                  <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div class= {{todo.status ? 'complete' : ''}}>
+                      {{todo.title}}
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      @if(todo.status)
+                        <button class="btn btn-sm btn-primary mr-1 ml-3" disabled>Complete</i></button>
+                      @else
+                        <form action="{{ route('todos.completeTask', {id: todo.id}) + '?_method=PATCH' }} " method="POST">
+                          {{ csrfField() }}
+                          <input type="hidden" name="taskComplete" value="on">
+                          <button class="btn btn-sm btn-primary mr-1 ml-3"><i class="fa fa-check"></i></button>
+                        </form>
+                        <a href="{{route('todos.edit', {id: todo.id})}}" class="btn btn-sm btn-warning mr-1"><i class="fa fa-pencil"></i></a>
+                      @endif
+                        <form action="{{ route('todos.delete', { id:todo.id }) + '?_method=DELETE' }}" method="POST">
+                          {{ csrfField() }}
+                          <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                        </form>
+                        <button class="btn btn-sm btn-success" onclick="deleteTask({{todo.id}})"><i class="fa fa-trash"></i></button>
+                      </div>
+                  </li>
+                @endeach
+              @endif
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+@endsection

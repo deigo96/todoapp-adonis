@@ -1,0 +1,22 @@
+ SELECT id as Product_id, name as Product_name, price 
+  FROM product 
+  ORDER BY price DESC 
+  LIMIT 4;
+
+
+ SELECT invoice_detail.invoice_id, invoice_detail.product_id, invoice.date as Transaction_date FROM invoice 
+  LEFT JOIN invoice_detail 
+    ON invoice.id = invoice_detail.invoice_id 
+  WHERE MONTH(invoice.date) = 01, YEAR(invoice.date) = 2022;
+
+
+SELECT invoice.user_id, COUNT(invoice.user_id) as Total_transaction 
+  FROM invoice 
+  GROUP BY invoice.user_id 
+  ORDER BY Total_transaction DESC LIMIT 3
+
+
+SELECT product.id, product.name as product_name 
+  FROM product 
+  WHERE product.id NOT IN 
+    (SELECT invoice_detail.product_id FROM invoice_detail);
